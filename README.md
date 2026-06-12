@@ -16,6 +16,7 @@ Welcome to the **Agentic AI Course**! This repository contains hands-on tutorial
 ### 📂 Module 1: LangChain Foundations (`1_Langchain/`)
 * **LangChain Introduction (`01_langchainintro.ipynb`):** Learn the core building blocks of LangChain, prompt templates, structured output parsing, and basic LLM interactions.
 * **Weather Agent Project (`weatheragent_project.ipynb`):** Build a real-world, tool-using weather agent that connects with the OpenWeather API to provide real-time, validated weather data.
+* **Web Search Agent (`websearch_agent.ipynb`):** Integrate web-search capabilities into your agents, enabling them to query the live internet, synthesize online sources, and answer current questions.
 
 ### 📂 Module 2: Retrieval-Augmented Generation (`2_RAG/`)
 * *Coming Soon* - Implementing vector databases, semantic search, and context-aware agents.
