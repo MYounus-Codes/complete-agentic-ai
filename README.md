@@ -1,46 +1,92 @@
-# Agentic AI Course: Building Practical AI Agents 🚀
+# Agentic AI Course: Building Practical AI Agents
 
-Welcome to the **Agentic AI Course**! This repository contains hands-on tutorials, projects, and notebooks designed to take you from foundational LangChain concepts to building complex, autonomous, tool-using AI agents.
+Welcome to the **Agentic AI Course**! This repository contains hands-on tutorials, notebooks, and projects that take you from Python fundamentals to building complex, autonomous, tool-using AI agents.
 
-## 🛠️ Tech Stack & Tooling
+## Tech Stack & Tooling
+
 - **Language:** Python 3.12+
-- **Framework:** LangChain
-- **LLM Provider:** Groq (High-speed inference)
-- **Package Manager:** `uv` (Lightning-fast Python package management)
+- **Frameworks:** LangChain, DeepAgents
+- **LLM Providers:** Groq, Google GenAI, OpenAI
+- **Package Manager:** `uv` (lightning-fast Python package management)
 - **Data Validation:** Pydantic
 
 ---
 
-## 📅 Course Curriculum
+## Course Curriculum
 
-### 📂 Module 1: LangChain Foundations (`1_Langchain/`)
-* **LangChain Introduction (`01_langchainintro.ipynb`):** Learn the core building blocks of LangChain, prompt templates, structured output parsing, and basic LLM interactions.
-* **Weather Agent Project (`weatheragent_project.ipynb`):** Build a real-world, tool-using weather agent that connects with the OpenWeather API to provide real-time, validated weather data.
-* **Web Search Agent (`websearch_agent.ipynb`):** Integrate web-search capabilities into your agents, enabling them to query the live internet, synthesize online sources, and answer current questions.
+### Module 0: Python Foundations (`00_python/`)
 
-### 📂 Module 2: Retrieval-Augmented Generation (`2_RAG/`)
-* *Coming Soon* - Implementing vector databases, semantic search, and context-aware agents.
+A self-paced Python curriculum covering the essentials needed before diving into AI agents.
 
-### 📂 Module 3: Advanced & Deep Agents (`3_Deep_Agents/`)
-* *Coming Soon* - High-autonomy agent architectures, memory management, and multi-agent coordination.
+| Topic | Topics Covered | Projects |
+|---|---|---|
+| **Basics** | Variables, conditionals, I/O | Number Story, Student Progress Tracker, Budget Planner |
+| **Data Types** | Strings, lists, dicts, sets | Profile Card, Inventory Summary, Expense Report |
+| **Functions** | Definitions, args, return values | Unit Converter, Text Toolkit, Recipe Planner |
+| **Loops** | `for`, `while`, nested loops | Countdown Timer, Daily Menu Counter, Study Tracker |
+| **OOP** | Classes, inheritance, encapsulation | Pet Demo, Bank Account System, School Management |
+
+Each topic includes an `_intro.py` (examples), `_exercises.py` (practice), and three staged projects (`basic` / `medium` / `advanced`).
+
+### Module 1: LangChain Foundations (`1_Langchain/`)
+
+| Notebook | Description |
+|---|---|
+| `00_langchainintro` | Core building blocks: prompt templates, LLM interactions |
+| `01_agents` | Introduction to agent architectures and reasoning loops |
+| `02_models` | Working with different LLM providers and model parameters |
+| `03_tools` | Creating and using custom tools with agents |
+| `04_messages` | Chat message types, history, and conversation patterns |
+| `05_structured_output` | Parsing and validating LLM outputs with Pydantic |
+
+**Projects:**
+- **Weather Agent** - Tool-using agent that fetches real-time weather data via OpenWeather API
+- **Web Search Agent** - Internet-connected agent that queries live sources
+- **Simple Website Builder** - Agent that generates static websites from natural language descriptions
+
+### Module 2: Retrieval-Augmented Generation (`2_RAG/`)
+*Coming soon* - Vector databases, semantic search, and context-aware RAG agents.
+
+### Module 3: Advanced & Deep Agents (`3_Deep_Agents/`)
+*Coming soon* - High-autonomy multi-agent systems, memory management, and agent coordination.
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
-Make sure you have [uv](https://github.com/astral-sh/uv) installed.
+
+- [uv](https://github.com/astral-sh/uv) installed
+- Python 3.12+
 
 ### Installation
+
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-username/agentic-ai-course.git
    cd agentic-ai-course
    ```
 
-2. Sync the virtual environment and dependencies using `uv`:
+2. Sync the virtual environment and dependencies:
    ```bash
    uv sync
    ```
 
-3. Set up your environment variables (e.g., `GROQ_API_KEY`, `OPENWEATHER_API_KEY`) in a `.env` file.
+3. Create a `.env` file in the project root with your API keys:
+   ```env
+   GROQ_API_KEY=
+   OPENWEATHER_API_KEY=
+   GOOGLE_API_KEY=
+   ```
+
+### Running Notebooks
+
+Launch Jupyter from the project root:
+```bash
+uv run jupyter notebook
+```
+
+Or run Python scripts directly:
+```bash
+uv run python 00_python/basics/basics_intro.py
+```
