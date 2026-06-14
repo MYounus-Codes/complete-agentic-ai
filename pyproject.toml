@@ -18,6 +18,7 @@ dependencies = [
     "pydantic>=2.13.4",
     "python-dotenv>=1.2.2",
     "pytube>=15.0.0",
+    "tavily-python>=0.7.26",
     "youtube-transcript-api>=1.2.4",
     "yt-dlp>=2026.6.9",
 ]
