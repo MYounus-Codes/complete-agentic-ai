@@ -10,3 +10,4 @@ wheels/
 .venv
 .env
 .kombai
+2_RAG\data\vector_store
