@@ -1,16 +1,16 @@
-from dotenv import load_dotenv
 import os
 import pickle
 
+from dotenv import load_dotenv
 from langchain_core.documents import Document
 from langchain_text_splitters import (
-    RecursiveCharacterTextSplitter
+    RecursiveCharacterTextSplitter,
 )
 from langchain_huggingface import (
-    HuggingFaceEmbeddings
+    HuggingFaceEmbeddings,
 )
 from langchain_pinecone import (
-    PineconeVectorStore
+    PineconeVectorStore,
 )
 from pinecone import (
     Pinecone,
@@ -18,114 +18,119 @@ from pinecone import (
 )
 
 from utils import (
-    extract_video_id,
     get_playlist_videos,
     get_video_title,
     get_transcript,
+    extract_video_id,
 )
 
 load_dotenv()
 
 INDEX_NAME = "youtube-rag-assistant"
 
-os.makedirs("data/bm25", exist_ok=True)
 
-embeddings = HuggingFaceEmbeddings(
-    model_name="BAAI/bge-small-en-v1.5"
-)
-
-pc = Pinecone(
-    api_key=os.getenv(
-        "PINECONE_API_KEY"
-    )
-)
-
-if INDEX_NAME not in pc.list_indexes().names():
-    pc.create_index(
-        name=INDEX_NAME,
-        dimension=384,
-        metric="cosine",
-        spec=ServerlessSpec(
-            cloud="aws",
-            region="us-east-1",
-        ),
+def ingest_url(url):
+    os.makedirs(
+        "data/bm25",
+        exist_ok=True,
     )
 
-index = pc.Index(INDEX_NAME)
-
-vector_store = PineconeVectorStore(
-    index=index,
-    embedding=embeddings,
-)
-
-url = input(
-    "Video or Playlist URL: "
-)
-
-videos = get_playlist_videos(url)
-
-for video_url in videos:
-
-    title = get_video_title(
-        video_url
+    embeddings = (
+        HuggingFaceEmbeddings(
+            model_name="BAAI/bge-small-en-v1.5"
+        )
     )
 
-    print(f"\nProcessing: {title}")
-
-    video_id = extract_video_id(
-        video_url
+    pc = Pinecone(
+        api_key=os.getenv(
+            "PINECONE_API_KEY"
+        )
     )
 
-    transcript = get_transcript(
-        video_id
+    if INDEX_NAME not in pc.list_indexes().names():
+        pc.create_index(
+            name=INDEX_NAME,
+            dimension=384,
+            metric="cosine",
+            spec=ServerlessSpec(
+                cloud="aws",
+                region="us-east-1",
+            ),
+        )
+
+    index = pc.Index(INDEX_NAME)
+
+    vector_store = PineconeVectorStore(
+        index=index,
+        embedding=embeddings,
     )
 
-    documents = []
+    videos = get_playlist_videos(url)
 
-    for seg in transcript:
-        documents.append(
-            Document(
-                page_content=seg.text,
-                metadata={
-                    "video_id": video_id,
-                    "video_title": title,
-                    "source": video_url,
-                    "timestamp": seg.start,
-                },
+    indexed_videos = []
+
+    for video_url in videos:
+
+        title = get_video_title(
+            video_url
+        )
+
+        video_id = extract_video_id(
+            video_url
+        )
+
+        transcript = get_transcript(
+            video_id
+        )
+
+        documents = []
+
+        for seg in transcript:
+            documents.append(
+                Document(
+                    page_content=seg.text,
+                    metadata={
+                        "video_id": video_id,
+                        "video_title": title,
+                        "source": video_url,
+                        "timestamp": seg.start,
+                    },
+                )
+            )
+
+        splitter = (
+            RecursiveCharacterTextSplitter(
+                chunk_size=1000,
+                chunk_overlap=200,
             )
         )
 
-    splitter = (
-        RecursiveCharacterTextSplitter(
-            chunk_size=1000,
-            chunk_overlap=200,
+        chunks = (
+            splitter.split_documents(
+                documents
+            )
         )
-    )
 
-    chunks = (
-        splitter.split_documents(
-            documents
-        )
-    )
-
-    vector_store.add_documents(
-        chunks,
-        namespace=video_id,
-    )
-
-    with open(
-        f"data/bm25/{video_id}.pkl",
-        "wb",
-    ) as f:
-        pickle.dump(
+        vector_store.add_documents(
             chunks,
-            f,
+            namespace=video_id,
         )
 
-    print(
-        f"Indexed {title}"
-    )
+        with open(
+            f"data/bm25/{video_id}.pkl",
+            "wb",
+        ) as f:
+            pickle.dump(
+                chunks,
+                f,
+            )
 
-print(
-    "\nAll videos indexed successfully!"
-)
+        indexed_videos.append(
+            {
+                "title": title,
+                "video_id": video_id,
+                "url": video_url,
+            }
+        )
+
+    return indexed_videos

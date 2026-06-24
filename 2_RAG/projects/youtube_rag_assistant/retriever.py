@@ -1,4 +1,8 @@
 import pickle
+import os
+
+from dotenv import load_dotenv
+from pinecone import Pinecone
 
 from langchain_classic.retrievers import (
     EnsembleRetriever,
@@ -12,16 +16,15 @@ from langchain_huggingface import (
 from langchain_pinecone import (
     PineconeVectorStore,
 )
-from pinecone import Pinecone
-from dotenv import load_dotenv
-import os
 
 load_dotenv()
 
 INDEX_NAME = "youtube-rag-assistant"
 
-embeddings = HuggingFaceEmbeddings(
-    model_name="BAAI/bge-small-en-v1.5"
+embeddings = (
+    HuggingFaceEmbeddings(
+        model_name="BAAI/bge-small-en-v1.5"
+    )
 )
 
 pc = Pinecone(
@@ -39,19 +42,17 @@ vector_store = PineconeVectorStore(
 
 
 def get_retriever(video_id):
-
     with open(
         f"data/bm25/{video_id}.pkl",
         "rb",
     ) as f:
-        bm25_docs = pickle.load(f)
+        docs = pickle.load(f)
 
     bm25 = (
         BM25Retriever.from_documents(
-            bm25_docs
+            docs
         )
     )
-
     bm25.k = 5
 
     dense = (

@@ -26,28 +26,28 @@ def extract_video_id(url):
 
 
 def get_video_title(url):
-    ydl_opts = {
-        "quiet": True,
-        "no_warnings": True,
-    }
-
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+    with yt_dlp.YoutubeDL(
+        {
+            "quiet": True,
+            "no_warnings": True,
+        }
+    ) as ydl:
         info = ydl.extract_info(
             url,
             download=False,
         )
 
-        return info["title"]
+    return info["title"]
 
 
 def get_playlist_videos(url):
-    ydl_opts = {
-        "quiet": True,
-        "extract_flat": True,
-        "skip_download": True,
-    }
-
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+    with yt_dlp.YoutubeDL(
+        {
+            "quiet": True,
+            "extract_flat": True,
+            "skip_download": True,
+        }
+    ) as ydl:
         info = ydl.extract_info(
             url,
             download=False,
@@ -57,9 +57,8 @@ def get_playlist_videos(url):
 
     if "entries" in info:
         for entry in info["entries"]:
-            video_id = entry["id"]
             videos.append(
-                f"https://www.youtube.com/watch?v={video_id}"
+                f"https://www.youtube.com/watch?v={entry['id']}"
             )
     else:
         videos.append(url)
@@ -80,27 +79,24 @@ def get_transcript(video_id):
     ]
 
     try:
-        transcript = api.fetch(
+        return api.fetch(
             video_id,
             languages=languages,
         )
-        return transcript
 
     except NoTranscriptFound:
         transcript_list = api.list(video_id)
+
         available = list(transcript_list)
 
         if not available:
-            raise Exception("No transcript available.")
-
-        print(
-            f"Using transcript language: "
-            f"{available[0].language}"
-        )
+            raise Exception(
+                "No transcript available."
+            )
 
         return available[0].fetch()
 
     except TranscriptsDisabled:
         raise Exception(
-            "Transcripts are disabled."
+            "Transcripts disabled."
         )
