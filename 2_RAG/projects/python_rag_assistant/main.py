@@ -6,9 +6,6 @@ os.environ["GORQ_API_KEY"] = os.getenv("GROQ_API_KEY")
 os.environ["PINECONE_API_KEY"] = os.getenv("PINECONE_API_KEY")
 os.environ["PINECONE_INDEX_NAME"] = os.getenv("PINECONE_INDEX_NAME")
 
-import os
-from dotenv import load_dotenv
-
 from langchain_community.document_loaders import PyMuPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
